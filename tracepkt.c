@@ -48,7 +48,7 @@ BPF_HASH(cur_ipt_do_table_args, u32, struct ipt_do_table_args);
         void* __ret;                                            \
         __ret = (void*) (((char*)source_struct) + offsetof(typeof(*source_struct), source_member)); \
         __ret;                                                  \
-    }) 
+    })
 #define member_read(destination, source_struct, source_member)  \
   do{                                                           \
     bpf_probe_read(                                             \
@@ -282,6 +282,16 @@ int kretprobe__ipt_do_table(struct pt_regs *ctx)
     return __ipt_do_table_out(ctx);
 }
 
+/**
+ * 2021-09-17: ip6t hooks not available anymore?
+
+jeroen@bembox:~/srlinux/tracepkt$ grep ip6t_do_table /proc/kallsyms
+jeroen@bembox:~/srlinux/tracepkt$ grep ipt_do_table /proc/kallsyms
+0000000000000000 r __ksymtab_ipt_do_table	[ip_tables]
+0000000000000000 r __kstrtab_ipt_do_table	[ip_tables]
+0000000000000000 T ipt_do_table	[ip_tables]
+*/
+/*
 int kprobe__ip6t_do_table(struct pt_regs *ctx, struct sk_buff *skb, const struct nf_hook_state *state, struct xt_table *table)
 {
     return __ipt_do_table_in(ctx, skb, state, table);
@@ -291,3 +301,4 @@ int kretprobe__ip6t_do_table(struct pt_regs *ctx)
 {
     return __ipt_do_table_out(ctx);
 }
+*/
